@@ -1,0 +1,4 @@
+include:
+  - board: nice_nano_v2
+    shield: pedal
+    artifact-name: pedal-nice_nano_v2

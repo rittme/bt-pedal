@@ -1,0 +1,60 @@
+#include <behaviors.dtsi>
+#include <dt-bindings/zmk/bt.h>
+#include <dt-bindings/zmk/keys.h>
+
+#define BASE 0
+#define BLE_SELECT 1
+
+/ {
+    behaviors {
+        clear_selected_profile: clear_selected_profile {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            bindings = <&bt BT_CLR>;
+        };
+
+        clear_selected_profile_hold: clear_selected_profile_hold {
+            compatible = "zmk,behavior-hold-tap";
+            #binding-cells = <2>;
+            flavor = "tap-preferred";
+            tapping-term-ms = <5000>;
+            bindings = <&clear_selected_profile>, <&none>;
+        };
+    };
+
+    keymap {
+        compatible = "zmk,keymap";
+
+        base_layer {
+            bindings = <
+                &kp F13  &kp F14  &kp F15
+            >;
+        };
+
+        ble_select_layer {
+            bindings = <
+                &trans   &trans    &bt BT_NXT
+            >;
+        };
+    };
+
+    combos {
+        compatible = "zmk,combos";
+
+        combo_ble_select {
+            timeout-ms = <200>;
+            slow-release;
+            layers = <BASE>;
+            key-positions = <0 1>;
+            bindings = <&mo BLE_SELECT>;
+        };
+
+        combo_clear_selected_profile {
+            timeout-ms = <200>;
+            slow-release;
+            layers = <BASE>;
+            key-positions = <0 1 2>;
+            bindings = <&clear_selected_profile_hold 0 0>;
+        };
+    };
+};

@@ -1,0 +1,6 @@
+if SHIELD_PEDAL
+
+config ZMK_KEYBOARD_NAME
+    default "BT Pedals"
+
+endif

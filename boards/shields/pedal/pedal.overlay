@@ -1,0 +1,33 @@
+#include <dt-bindings/gpio/gpio.h>
+#include <dt-bindings/zmk/matrix_transform.h>
+
+/ {
+    chosen {
+        zmk,kscan = &pedal_kscan;
+        zmk,matrix-transform = &pedal_transform;
+        /delete-property/ zmk,battery;
+    };
+
+    pedal_kscan: pedal_kscan {
+        compatible = "zmk,kscan-gpio-direct";
+        wakeup-source;
+        debounce-press-ms = <5>;
+        debounce-release-ms = <5>;
+        debounce-scan-period-ms = <1>;
+        input-gpios = <&gpio0 31 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>,
+                      <&gpio0 29 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>,
+                      <&gpio0 2 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>;
+    };
+
+    pedal_transform: pedal_transform {
+        compatible = "zmk,matrix-transform";
+        rows = <1>;
+        columns = <3>;
+        map = <RC(0,0) RC(0,1) RC(0,2)>;
+    };
+};
+
+/* The nice!nano v2 board target assumes its own VDDH battery topology. */
+&vbatt {
+    status = "disabled";
+};
