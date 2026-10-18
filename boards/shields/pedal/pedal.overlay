@@ -14,8 +14,8 @@
         debounce-press-ms = <5>;
         debounce-release-ms = <5>;
         debounce-scan-period-ms = <1>;
-        input-gpios = <&gpio0 29 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>,
-                      <&gpio0 31 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>,
+        input-gpios = <&gpio0 31 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>,
+                      <&gpio0 29 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>,
                       <&gpio0 2 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>;
     };
 
