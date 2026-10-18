@@ -6,15 +6,24 @@ compatible controller target.
 
 ## Wiring and default keymap
 
-| Pedal position | nRF52840 GPIO | Input mode | Default key |
-| --- | --- | --- | --- |
-| 1 | P0.31 | active-low, internal pull-up | F13 |
-| 2 | P0.29 | active-low, internal pull-up | F14 |
-| 3 | P0.02 | active-low, internal pull-up | F15 |
+| Pedal position | Physical pedal | nRF52840 GPIO | Input mode                   | Default key |
+| -------------- | -------------- | ------------- | ---------------------------- | ----------- |
+| 1              | center         | P0.31         | active-low, internal pull-up | F16         |
+| 2              | left           | P0.29         | active-low, internal pull-up | F17         |
+| 3              | right          | P0.02         | active-low, internal pull-up | F18         |
 
-Connect the pedal's red wire to regulated 3.3 V and black wire to GND. Each
-signal wire is expected to pull its GPIO to GND when pressed. The keycodes are
-the three `&kp` bindings in `config/pedal.keymap`.
+The original FS2020U1 IR break-beam sensor boards have been replaced with plain
+switches, because the IR sensors drew roughly 16 mA continuously (whole device
+measured at ~0.08 W from USB) and their outputs only fell to ~1.5 V against the
+nRF52840's internal pull-ups.
+
+Wire each switch between its GPIO and **GND** (use COM + NO on three-terminal
+switches); the grounds may be shared. No external resistors or 3.3 V
+connection are needed because the GPIOs use internal pull-ups. Expect ~3.3 V
+at rest and ~0 V while pressed.
+
+The keycodes are the three `&kp` bindings in `config/pedal.keymap`. F16–F18 do
+not produce visible text; use a key event viewer to test them.
 
 ## Bluetooth controls
 
@@ -79,7 +88,7 @@ Physical test checklist:
    successful UF2 flashing/recovery.
 2. With a meter or logic analyzer, confirm P0.31/P0.29/P0.02 are high at rest
    and low only while the corresponding pedal is pressed.
-3. Verify F13, F14, and F15 each generate a key-down on press and key-up on
+3. Verify F16, F17, and F18 each generate a key-down on press and key-up on
    release, including simultaneous independent presses.
 4. Pair a fresh BLE profile, cycle profiles with the pedal chord, and verify
    profile clearing and re-pairing.
