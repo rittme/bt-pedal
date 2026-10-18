@@ -23,6 +23,13 @@
             bindings = <&bootloader>, <&none>;
         };
 
+        /* BT_CLR expands to two cells, so wrap it for use inside a hold-tap. */
+        bt_clear: bt_clear {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            bindings = <&bt BT_CLR>;
+        };
+
         /*
          * Left pedal while the BT layer is active: tap -> clear profile,
          * hold 5 s -> bootloader. The hold path covers the case where all
@@ -33,7 +40,7 @@
             #binding-cells = <2>;
             flavor = "tap-preferred";
             tapping-term-ms = <5000>;
-            bindings = <&bootloader>, <&bt>;
+            bindings = <&bootloader>, <&bt_clear>;
         };
     };
 
@@ -48,7 +55,7 @@
 
         bt_ctrl_layer {
             bindings = <
-                &trans   &bt_clear_or_bootloader 0 BT_CLR   &trans
+                &trans   &bt_clear_or_bootloader 0 0   &trans
             >;
         };
     };

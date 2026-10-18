@@ -29,8 +29,8 @@ not produce visible text; use a key event viewer to test them.
 
 ZMK supports five BLE profiles by default.
 
-- Hold pedals 1 and 2, then tap pedal 3, to select the next BLE profile.
-- Hold all three pedals for five seconds to clear the selected profile only.
+- Hold the two right pedals (center + right, pedals 1 and 3) and tap the left pedal (pedal 2) to clear/reset the selected Bluetooth profile.
+- Hold all three pedals down for 5 seconds to enter UF2 bootloader mode (mounts the USB drive for flashing).
 
 An unpaired selected profile advertises for pairing. Select it, then choose
 `BT Pedals` from the host's Bluetooth pairing screen. Remove the keyboard
