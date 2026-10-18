@@ -3,22 +3,37 @@
 #include <dt-bindings/zmk/keys.h>
 
 #define BASE 0
-#define BLE_SELECT 1
+#define BT_CTRL 1
+
+/*
+ * Key positions: 0 = center pedal, 1 = left pedal, 2 = right pedal.
+ *
+ * - Hold center + right, then tap left: clear the selected BLE profile.
+ * - Hold all three pedals for 5 seconds: enter the UF2 bootloader.
+ */
 
 / {
     behaviors {
-        clear_selected_profile: clear_selected_profile {
-            compatible = "zmk,behavior-macro";
-            #binding-cells = <0>;
-            bindings = <&bt BT_CLR>;
-        };
-
-        clear_selected_profile_hold: clear_selected_profile_hold {
+        /* Hold all pedals for 5 s -> bootloader; releasing earlier does nothing. */
+        bootloader_hold: bootloader_hold {
             compatible = "zmk,behavior-hold-tap";
             #binding-cells = <2>;
             flavor = "tap-preferred";
             tapping-term-ms = <5000>;
-            bindings = <&clear_selected_profile>, <&none>;
+            bindings = <&bootloader>, <&none>;
+        };
+
+        /*
+         * Left pedal while the BT layer is active: tap -> clear profile,
+         * hold 5 s -> bootloader. The hold path covers the case where all
+         * three pedals were pressed too slowly to trigger the 3-key combo.
+         */
+        bt_clear_or_bootloader: bt_clear_or_bootloader {
+            compatible = "zmk,behavior-hold-tap";
+            #binding-cells = <2>;
+            flavor = "tap-preferred";
+            tapping-term-ms = <5000>;
+            bindings = <&bootloader>, <&bt>;
         };
     };
 
@@ -31,9 +46,9 @@
             >;
         };
 
-        ble_select_layer {
+        bt_ctrl_layer {
             bindings = <
-                &trans   &trans    &bt BT_NXT
+                &trans   &bt_clear_or_bootloader 0 BT_CLR   &trans
             >;
         };
     };
@@ -41,20 +56,20 @@
     combos {
         compatible = "zmk,combos";
 
-        combo_ble_select {
+        combo_bt_ctrl {
             timeout-ms = <200>;
             slow-release;
             layers = <BASE>;
-            key-positions = <0 1>;
-            bindings = <&mo BLE_SELECT>;
+            key-positions = <0 2>;
+            bindings = <&mo BT_CTRL>;
         };
 
-        combo_clear_selected_profile {
+        combo_bootloader {
             timeout-ms = <200>;
             slow-release;
             layers = <BASE>;
             key-positions = <0 1 2>;
-            bindings = <&clear_selected_profile_hold 0 0>;
+            bindings = <&bootloader_hold 0 0>;
         };
     };
 };
