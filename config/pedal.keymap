@@ -3,44 +3,67 @@
 #include <dt-bindings/zmk/keys.h>
 
 #define BASE 0
-#define BT_CTRL 1
+#define BLE_PROFILE 1
+#define BLE_CLEAR 2
 
 /*
- * Key positions: 0 = center pedal, 1 = left pedal, 2 = right pedal.
+ * Switch positions (ordered left to right):
+ *   Key 0 = Left pedal   (P0.29)
+ *   Key 1 = Center pedal (P0.31)
+ *   Key 2 = Right pedal  (P0.02)
  *
- * - Hold center + right, then tap left: clear the selected BLE profile.
- * - Hold all three pedals for 5 seconds: enter the UF2 bootloader.
+ * Chords & functions:
+ *   1. Hold two left pedals (0 and 1) -> tap right pedal (2): change BT profile
+ *   2. Hold two right pedals (1 and 2) -> tap left pedal (0): clear current BT profile
+ *   3. Hold all three pedals down for 5 seconds: enter UF2 bootloader mode
  */
 
 / {
     behaviors {
-        /* Hold all pedals for 5 s -> bootloader; releasing earlier does nothing. */
-        bootloader_hold: bootloader_hold {
-            compatible = "zmk,behavior-hold-tap";
-            #binding-cells = <2>;
-            flavor = "tap-preferred";
-            tapping-term-ms = <5000>;
-            bindings = <&bootloader>, <&none>;
+        /* Macros wrapping BT commands (0-parameter behaviors for clean hold-tap integration) */
+        bt_nxt: bt_nxt {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            bindings = <&bt BT_NXT>;
         };
 
-        /* BT_CLR expands to two cells, so wrap it for use inside a hold-tap. */
-        bt_clear: bt_clear {
+        bt_clr: bt_clr {
             compatible = "zmk,behavior-macro";
             #binding-cells = <0>;
             bindings = <&bt BT_CLR>;
         };
 
         /*
-         * Left pedal while the BT layer is active: tap -> clear profile,
-         * hold 5 s -> bootloader. The hold path covers the case where all
-         * three pedals were pressed too slowly to trigger the 3-key combo.
+         * Tap: next BT profile.
+         * Hold 5 s (when all pedals are down): enter bootloader.
          */
-        bt_clear_or_bootloader: bt_clear_or_bootloader {
+        boot_or_nxt: boot_or_nxt {
             compatible = "zmk,behavior-hold-tap";
             #binding-cells = <2>;
             flavor = "tap-preferred";
             tapping-term-ms = <5000>;
-            bindings = <&bootloader>, <&bt_clear>;
+            bindings = <&bootloader>, <&bt_nxt>;
+        };
+
+        /*
+         * Tap: clear current BT profile.
+         * Hold 5 s (when all pedals are down): enter bootloader.
+         */
+        boot_or_clr: boot_or_clr {
+            compatible = "zmk,behavior-hold-tap";
+            #binding-cells = <2>;
+            flavor = "tap-preferred";
+            tapping-term-ms = <5000>;
+            bindings = <&bootloader>, <&bt_clr>;
+        };
+
+        /* Hold 5 s for bootloader, tap does nothing */
+        boot_only: boot_only {
+            compatible = "zmk,behavior-hold-tap";
+            #binding-cells = <2>;
+            flavor = "tap-preferred";
+            tapping-term-ms = <5000>;
+            bindings = <&bootloader>, <&none>;
         };
     };
 
@@ -53,9 +76,17 @@
             >;
         };
 
-        bt_ctrl_layer {
+        /* Activated when holding the two left pedals (0 and 1) */
+        ble_profile_layer {
             bindings = <
-                &trans   &bt_clear_or_bootloader 0 0   &trans
+                &trans   &trans   &boot_or_nxt 0 0
+            >;
+        };
+
+        /* Activated when holding the two right pedals (1 and 2) */
+        ble_clear_layer {
+            bindings = <
+                &boot_or_clr 0 0   &trans   &trans
             >;
         };
     };
@@ -63,20 +94,31 @@
     combos {
         compatible = "zmk,combos";
 
-        combo_bt_ctrl {
+        /* Hold two left pedals -> activate profile selection layer */
+        combo_ble_profile {
             timeout-ms = <200>;
             slow-release;
             layers = <BASE>;
-            key-positions = <0 2>;
-            bindings = <&mo BT_CTRL>;
+            key-positions = <0 1>;
+            bindings = <&mo BLE_PROFILE>;
         };
 
-        combo_bootloader {
+        /* Hold two right pedals -> activate clear profile layer */
+        combo_ble_clear {
             timeout-ms = <200>;
             slow-release;
             layers = <BASE>;
+            key-positions = <1 2>;
+            bindings = <&mo BLE_CLEAR>;
+        };
+
+        /* All three pedals held together -> bootloader after 5 seconds */
+        combo_bootloader {
+            timeout-ms = <300>;
+            slow-release;
+            layers = <BASE BLE_PROFILE BLE_CLEAR>;
             key-positions = <0 1 2>;
-            bindings = <&bootloader_hold 0 0>;
+            bindings = <&boot_only 0 0>;
         };
     };
 };

@@ -8,8 +8,8 @@ compatible controller target.
 
 | Pedal position | Physical pedal | nRF52840 GPIO | Input mode                   | Default key |
 | -------------- | -------------- | ------------- | ---------------------------- | ----------- |
-| 1              | center         | P0.31         | active-low, internal pull-up | F16         |
-| 2              | left           | P0.29         | active-low, internal pull-up | F17         |
+| 1              | left           | P0.29         | active-low, internal pull-up | F16         |
+| 2              | center         | P0.31         | active-low, internal pull-up | F17         |
 | 3              | right          | P0.02         | active-low, internal pull-up | F18         |
 
 The original FS2020U1 IR break-beam sensor boards have been replaced with plain
@@ -25,12 +25,13 @@ at rest and ~0 V while pressed.
 The keycodes are the three `&kp` bindings in `config/pedal.keymap`. F16–F18 do
 not produce visible text; use a key event viewer to test them.
 
-## Bluetooth controls
+## Controls
 
 ZMK supports five BLE profiles by default.
 
-- Hold the two right pedals (center + right, pedals 1 and 3) and tap the left pedal (pedal 2) to clear/reset the selected Bluetooth profile.
-- Hold all three pedals down for 5 seconds to enter UF2 bootloader mode (mounts the USB drive for flashing).
+- **Change BLE profile**: Hold the two left pedals (left + center) and tap the right pedal.
+- **Forget current BLE connection**: Hold the two right pedals (center + right) and tap the left pedal.
+- **Enter bootloader mode**: Hold all three pedals down together for 5 seconds (with USB plugged in, mounts the `NICENANO` drive for flashing).
 
 An unpaired selected profile advertises for pairing. Select it, then choose
 `BT Pedals` from the host's Bluetooth pairing screen. Remove the keyboard
