@@ -8,8 +8,8 @@
 
 /*
  * Switch positions (ordered left to right):
- *   Key 0 = Left pedal   (P0.29)
- *   Key 1 = Center pedal (P0.31)
+ *   Key 0 = Left pedal   (P0.31)
+ *   Key 1 = Center pedal (P0.29)
  *   Key 2 = Right pedal  (P0.02)
  *
  * Chords & functions:

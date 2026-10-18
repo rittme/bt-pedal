@@ -8,8 +8,8 @@ compatible controller target.
 
 | Pedal position | Physical pedal | nRF52840 GPIO | Input mode                   | Default key |
 | -------------- | -------------- | ------------- | ---------------------------- | ----------- |
-| 1              | left           | P0.29         | active-low, internal pull-up | F16         |
-| 2              | center         | P0.31         | active-low, internal pull-up | F17         |
+| 1              | left           | P0.31         | active-low, internal pull-up | F16         |
+| 2              | center         | P0.29         | active-low, internal pull-up | F17         |
 | 3              | right          | P0.02         | active-low, internal pull-up | F18         |
 
 The original FS2020U1 IR break-beam sensor boards have been replaced with plain
